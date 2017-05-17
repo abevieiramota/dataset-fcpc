@@ -42,6 +42,8 @@ class PagamentosPessoaFisicaExtractor:
         dfs = [self.ler_zip_csv(zip_file) for zip_file in self.files]
 
         self.df = pd.concat(dfs, ignore_index=True)
+        # por algum motivo essa coluna não está sendo reconhecida como string...
+        self.df["PROJETO"] = self.df["PROJETO"].astype("str")
 
     def make_encoders(self):
 
@@ -49,9 +51,7 @@ class PagamentosPessoaFisicaExtractor:
 
             self.logger.info(">Normalizando coluna {}".format(colname))
 
-            # astype("str") adicionado depois de dar erro com a coluna PROJETO
-            # acredito que alguma mudança no numpy(atualizei aqui sem atentar)
-            encoder = LabelEncoder().fit(self.df[colname].astype("str"))
+            encoder = LabelEncoder().fit(self.df[colname])
         
             encoder_df = pd.DataFrame(encoder.classes_, columns=[colname])
             encoder_df.index.name = id_colname
@@ -66,10 +66,8 @@ class PagamentosPessoaFisicaExtractor:
 
         self.make_encoders()
 
-        # astype("str") adicionado depois de dar erro com a coluna PROJETO
-        # acredito que alguma mudança no numpy(atualizei aqui sem atentar)
         self.df[PagamentosPessoaFisicaExtractor.CAT_ID_COLS] = self.df[PagamentosPessoaFisicaExtractor.CAT_COLS]\
-        .apply(lambda col: self.encoders[col.name].transform(col.astype("str")))
+        .apply(lambda col: self.encoders[col.name].transform(col))
         self.df.drop(PagamentosPessoaFisicaExtractor.CAT_COLS, axis=1, inplace=True)
 
 
@@ -85,7 +83,6 @@ class PagamentosPessoaFisicaExtractor:
         self.logger.info('CRIANDO DATASET FINAL')
 
         self.extract_data()
-        print(self.df.dtypes)
         self.normalize()
         self.save_df()
 

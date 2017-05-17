@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 from numpy import dtype
 import os
 
@@ -20,11 +19,14 @@ def read_fcpc(basepath='.'):
     # reconstitui as colunas normalizadas
     for fk in (col for col in fcpc.columns if col.endswith("-ID")):
         
-        filepath = os.path.join(basepath, 
-                                "{}.csv".format(fk.rsplit("-", maxsplit=1)[0]))
+        colname = fk.rsplit("-", maxsplit=1)[0]
+        filepath = os.path.join(basepath, "{}.csv".format(colname))
         col_df = pd.read_csv(filepath)
         fcpc = pd.merge(fcpc, col_df)
         fcpc.drop(fk, axis=1, inplace=True)
+        
+    # por algum motivo essa coluna não está sendo reconhecida como string...
+    fcpc["PROJETO"] = fcpc.PROJETO.astype("str")
     
     return fcpc
 
