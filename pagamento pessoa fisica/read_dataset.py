@@ -9,7 +9,9 @@ fcpc_dtypes = {'CPF-ID': dtype('int64'),
  'TIPO DE PAGAMENTO-ID': dtype('int64'),
  'VALOR (R$)': dtype('float64')}
 
-def read_fcpc(basepath='.'):
+basepath = os.path.dirname(os.path.abspath(__file__))
+
+def read_fcpc(basepath=basepath):
 
     # leitura de arquivo .CSV
     fcpc = pd.read_csv(os.path.join(basepath, "dataset.csv"), 
