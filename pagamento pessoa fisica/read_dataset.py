@@ -1,4 +1,5 @@
 import pandas as pd
+from datetime import datetime
 from numpy import dtype
 import os
 
@@ -16,7 +17,8 @@ def read_fcpc(basepath=basepath):
     # leitura de arquivo .CSV
     fcpc = pd.read_csv(os.path.join(basepath, "dataset.csv"), 
                         dtype=fcpc_dtypes,
-                        parse_dates=["DATA"])
+                        parse_dates=["DATA"],
+                        date_parser=lambda x: datetime.strptime(x, "%d/%m/%Y"))
 
     # reconstitui as colunas normalizadas
     for fk in (col for col in fcpc.columns if col.endswith("-ID")):
