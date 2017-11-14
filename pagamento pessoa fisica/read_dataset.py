@@ -28,9 +28,6 @@ def read_fcpc(basepath=basepath):
         col_df = pd.read_csv(filepath)
         fcpc = pd.merge(fcpc, col_df)
         fcpc.drop(fk, axis=1, inplace=True)
-        
-    # por algum motivo essa coluna não está sendo reconhecida como string...
-    fcpc["PROJETO"] = fcpc.PROJETO.astype("str")
     
     return fcpc
 
